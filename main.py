@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 
 from models.models import Item, ItemTwo
 
@@ -40,6 +40,14 @@ async def test_route_2(path_param_one: str, query_param_one: Optional[int] = 199
     }
 
 
-@app.post("/items/")
+@app.post("/test/create-items/")
 async def test_create_item(item: ItemTwo):
     return item
+
+
+@app.get("/test/read-items/")
+async def test_read_items(q: Optional[str] = Query(None, max_length=50)):
+    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
+    if q:
+        results.update({"q": q})
+    return results
