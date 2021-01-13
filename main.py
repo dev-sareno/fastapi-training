@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import FastAPI
 
-from models.models import Item
+from models.models import Item, ItemTwo
 
 
 app = FastAPI()
@@ -38,3 +38,8 @@ async def test_route_2(path_param_one: str, query_param_one: Optional[int] = 199
             "query_param_one": query_param_one
         }
     }
+
+
+@app.post("/items/")
+async def test_create_item(item: ItemTwo):
+    return item
