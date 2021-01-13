@@ -7,6 +7,7 @@ from models.models import Item, ItemTwo, \
     UserSignupRequest, UserSignupResponse, \
     UserLoginRequest, UserLoginResponse, \
     JwtData
+from middlewares.middlewares import init_middlewares
 
 from passlib.context import CryptContext
 import jwt
@@ -20,6 +21,8 @@ fakeDb = FakeDb()
 
 app = FastAPI()
 
+# Initialize middlewares
+init_middlewares(app)
 
 @app.get(
     "/",
