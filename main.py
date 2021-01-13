@@ -32,3 +32,13 @@ async def test_route_1():
     return {
         "message": "route_1 Stub!"
     }
+
+
+@app.get("/test/route2/{path_param_one}")
+async def test_route_2(path_param_one: str, query_param_one: Optional[int] = None):
+    return {
+        "message": {
+            "path_param_one": path_param_one,
+            "query_param_one": query_param_one
+        }
+    }
