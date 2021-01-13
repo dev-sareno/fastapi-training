@@ -46,7 +46,7 @@ async def test_create_item(item: ItemTwo):
 
 
 @app.get("/test/read-items/")
-async def test_read_items(q: Optional[str] = Query(None, max_length=50)):
+async def test_read_items(q: Optional[str] = Query(None, max_length=50, title="This is a title", description="This is a description")):
     results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
     if q:
         results.update({"q": q})
