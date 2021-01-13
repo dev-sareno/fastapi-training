@@ -33,12 +33,14 @@ class UserLoginRequest(BaseModel):
     password: str
 
 
-class UserLoginResponse(BaseModel):
-    access_token: str
-
-
 class JwtData(BaseModel):
     username: str  # email
     first_name: str
     last_name: str
+    expiration: int
+
+
+class UserLoginResponse(BaseModel):
+    access_token: str
+    token_type: str
 

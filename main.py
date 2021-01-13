@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Optional, List
 
 from fastapi import FastAPI, Query, status, HTTPException
@@ -11,6 +12,7 @@ from passlib.context import CryptContext
 import jwt
 
 from models.fake_db import FakeDb
+from models.constants import JWT_SECRET_KEY, JWT_EXPIRATION_SECONDS_DEFAULT
 
 
 
@@ -104,9 +106,9 @@ async def test_required_query_param(q: Optional[str] = Query(..., max_length=5))
 )
 async def users_signup(body: UserSignupRequest):
     # Check if the username already taken.
-    # If already taken, raise 409 Conflict "Username already taken."
+    # If already taken, raise 409 Conflict "Username already taken".
     if fakeDb.is_username_existed(body.username):
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already taken.")
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already taken")
     # If not,
     #   1. Hash the password.
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -123,15 +125,31 @@ async def users_signup(body: UserSignupRequest):
     tags=["Test", "Users"]
 )
 async def users_login(body: UserLoginRequest):
-    # Check if username existed in the records.
-    # If not, raise 401 Unauthorized.
-    # If existed, return the token (JwtData).
-    return {}
+    # Check username and password if existed in the records.
+    # If not, raise 401 Unauthorized "Incorrect username or password".
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    user = fakeDb.get_user(body.username)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
+    is_password_matched = pwd_context.verify(body.password, user.get("password_hash"))
+    if not is_password_matched:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
+    # If existed, 
+    #   1. Create the expiration time, use JWT_EXPIRATION_SECONDS_DEFAULT as default.
+    to_encode = user.copy()
+    to_encode.pop("password_hash")  # exclude the hash password
+    expiration = datetime.utcnow() + timedelta(seconds=JWT_EXPIRATION_SECONDS_DEFAULT)
+    to_encode.update({"expiration": expiration.timestamp()})
+    #   2. Generate an access token, include the user's data (w/o the hash password) and the expiration.
+    access_token = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm="HS256")
+    #   3. Return the access token data.
+    return UserLoginResponse(access_token=access_token, token_type="bearer")
 
 
 @app.get(
     "/users/usernames/",
     response_model=List[str],
-    tags=["Test", "Users"])
+    tags=["Test", "Users"]
+)
 async def get_users_usernames():
     return [i.get("username") for i in fakeDb.get_users()]

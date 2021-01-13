@@ -4,10 +4,11 @@ class FakeDb():
             {
                 "username": "johndoe@example.com",
                 "first_name": "John",
-                "last_name": "Doe"
+                "last_name": "Doe",
+                "password_hash": "$2y$12$QT74FqaCxQ7puSbPUOAzH.fNTPbDx2JOu8RIJxwH3TBuqN1nSi94a"  # mysecretpassword
             }
         ]
-        
+
     
     def get_users(self):
         return self.users
@@ -25,7 +26,12 @@ class FakeDb():
         data = {
                 "username": username,
                 "first_name": first_name,
-                "last_name": last_name
+                "last_name": last_name,
+                "password_hash": kwargs.get("password_hash")
             }
         self.users.append(data)
+    
+
+    def get_user(self, username):
+        return next((i for i in self.users if i.get("username") == username), None)
     
