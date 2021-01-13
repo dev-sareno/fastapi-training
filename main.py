@@ -1,9 +1,17 @@
 from typing import Optional
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, status
 
-from models.models import Item, ItemTwo
+from models.models import Item, ItemTwo, \
+    UserSignupRequest, UserSignupResponse, \
+    UserLoginRequest, UserLoginResponse, \
+    JwtData
 
+from models.fake_db import FakeDb
+
+
+
+fakeDb = FakeDb()
 
 app = FastAPI()
 
@@ -59,3 +67,22 @@ async def test_required_query_param(q: Optional[str] = Query(..., max_length=5))
     if q:
         results.update({"q": q})
     return results
+
+
+@app.post("users/signup/", status_code=status.HTTP_201_CREATED, response_model=UserSignupResponse)
+async def users_signup(body: UserSignupRequest):
+    # Check if the username already taken.
+    # If already taken, raise 409 Conflict "Username already taken"
+    # If not,
+    #   1. Hash the password.
+    #   2. Save to database.
+    #   3. Return 201 create
+    return {}
+
+
+@app.post("/users/login/", response_model=UserLoginResponse)
+async def users_login(body: UserLoginRequest):
+    # Check if username existed in the records.
+    # If not, raise 401 Unauthorized.
+    # If existed, return the token (JwtData).
+    return {}
