@@ -51,3 +51,11 @@ async def test_read_items(q: Optional[str] = Query(None, max_length=50, title="T
     if q:
         results.update({"q": q})
     return results
+
+
+@app.get("/test/required-query-param/")
+async def test_required_query_param(q: Optional[str] = Query(..., max_length=5)):
+    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
+    if q:
+        results.update({"q": q})
+    return results
