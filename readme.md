@@ -12,3 +12,8 @@ Serve: `$ uvcorn main:app --reload`
 
 ## Static Files
 Link: [http://localhost:8000/static/files/test.txt](http://localhost:8000/static/files/test.txt)
+
+## Deployment
+Using `gunicorn` for serving in production. \
+Command `$ gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app` (include pid file, etc.). \
+Read more on [https://www.uvicorn.org/deployment/](https://www.uvicorn.org/deployment/).
