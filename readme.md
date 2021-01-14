@@ -7,3 +7,6 @@ Serve: `$ uvcorn main:app --reload`
 ## Dependencies
 1. `pyjwt` - JWT encode/decode. Link [https://github.com/jpadilla/pyjwt](https://github.com/jpadilla/pyjwt).
 1. `passlib` - Bcrypt encode. Link [https://pypi.org/project/passlib/](https://pypi.org/project/passlib/).
+
+## Static Files
+Link: [http://localhost:8000/static/files/test.txt](http://localhost:8000/static/files/test.txt)

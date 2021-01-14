@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from typing import Optional, List
 
 from fastapi import FastAPI, Query, status, HTTPException
+from fastapi.staticfiles import StaticFiles
 
 from models.models import Item, ItemTwo, \
     UserSignupRequest, UserSignupResponse, \
@@ -23,6 +24,9 @@ app = FastAPI()
 
 # Initialize middlewares
 init_middlewares(app)
+
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get(
     "/",
