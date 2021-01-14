@@ -4,17 +4,17 @@ from typing import Optional, List
 from fastapi import FastAPI, Query, status, HTTPException
 from fastapi.staticfiles import StaticFiles
 
+from passlib.context import CryptContext
+import jwt
+
 from models.models import Item, ItemTwo, \
     UserSignupRequest, UserSignupResponse, \
     UserLoginRequest, UserLoginResponse, \
     JwtData
-from middlewares.middlewares import init_middlewares
-
-from passlib.context import CryptContext
-import jwt
-
 from models.fake_db import FakeDb
 from models.constants import JWT_SECRET_KEY, JWT_EXPIRATION_SECONDS_DEFAULT
+
+from middlewares.middlewares import init_middlewares
 
 
 
@@ -27,6 +27,7 @@ init_middlewares(app)
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 @app.get(
     "/",

@@ -3,3 +3,4 @@ uvicorn[standard]
 PyJWT
 passlib
 aiofiles  # Serving static files
+pytest  # For testing
